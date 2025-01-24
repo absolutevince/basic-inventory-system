@@ -1,21 +1,11 @@
 const pool = require("./pool");
 
-exports.getProducts = async () => {
-	const { rows, fields } = await pool.query("SELECT * FROM products");
-	return { rows, fields };
+exports.createInventoryQuery = async ({ name }) => {
+	await pool.query(`CREATE TABLE IF NOT EXISTS ${name} (name VARCHAR (35))`);
 };
 
-exports.addProduct = async ({ name, category, price }) => {
-	await pool.query(`
-		INSERT INTO products (name, category, price)
-		VALUES ('${name}', '${category}', ${price});
-`);
-};
-
-exports.getCategories = async () => {
-	const { rows } = await pool.query(`
-		SELECT DISTINCT category FROM products;
-`);
-
-	return rows;
+exports.getTableNamesQuery = async () => {
+	return await pool.query(
+		"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'public'",
+	);
 };
