@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+		<link rel="stylesheet" href="/productStyle.css">
+</head>
+<body>
+		<h1><%= title %></h1>
+		<% if(products && fields) { %>	
+		<div>
+		<form action="/product/add" method="POST">
+			<input type="text" name="name" autocomplete="off"/>
+				<div class="category-input-cont">
+					<input class="category-input" type="text" name="category" autocomplete="off">
+					<div class="options">
+						<% if(categories) {%>
+						<% for(let i = 0; i < categories.length; i++) { %>
+							<button class="option-btn" data-value="<%= categories[i].category %>"><%= categories[i].category%></button>
+							<%} %>
+						<% } %>
+					</div>
+				</div>
+			<input type="number" name="price" />
+			<button className="addB-btn" type='submit'>Add</button>
+		</form>
+		<table>
+			<thead>
+				<tr>
+					<% for(let i = 1; i < fields.length; i++) { %>
+					<th><%= fields[i].name %></th>
+					<% } %>
+				</tr>
+			</thead>
+			<tbody>
+				<% for(let i = 0; i < products.length; i++) { %>
+					<tr>
+						<td><%= products[i].name %></td>
+						<td><%= products[i].category %></td>
+						<td>₱ <%= products[i].price %></td>
+					</tr>
+				<% } %>
+			</tbody>
+			<tfoot></tfoot>
+		</table>
+		<% }%>
+		</div>
+	
+		<script src="/productScript.js"></script>
+</body>
+</html>

@@ -1,14 +1,15 @@
-const { getProducts } = require("../db/query");
+const { addListener } = require("../db/pool");
+const { getProducts, addProduct, getCategories } = require("../db/query");
 
-exports.getProducts = async (req, res) => {
+exports.getProductsGet = async (req, res) => {
 	const { rows, fields } = await getProducts();
+	const categories = await getCategories();
 
-	console.log(fields);
-
-	res.render("product", {
+	res.render("productView", {
 		title: "Inventory",
 		products: rows,
 		fields: fields,
+		categories: categories,
 	});
 };
 
@@ -17,5 +18,7 @@ exports.addProductGet = async (req, res) => {
 };
 
 exports.addProductPost = async (req, res) => {
-	res.send("Add product complete");
+	const { name, category, price } = req.body;
+	await addProduct({ name, category, price });
+	res.redirect("/product");
 };
