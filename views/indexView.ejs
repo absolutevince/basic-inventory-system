@@ -12,6 +12,7 @@
 			<h1 class="text-2xl"><%= title %></h1>
 		</header>	
 		<main class="relative">
+				<%- include("partials/errorMessage") %>
 				<% if(!inventories) { %>
 				<div class="flex justify-center w-[80%] mx-auto">
 					<h2>Empty Inventory</h2>	

@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const indexRouter = require("./routes/indexRouter");
+const errorHandler = require("./handlers/errorHandler");
 
 const app = express();
 
@@ -14,7 +15,13 @@ app.use(express.urlencoded({ extended: true })); // extends the parser to includ
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "script")));
 app.use(express.static(path.join(__dirname, "style")));
+
+// Routers
 app.use("/", indexRouter);
+
+app.use((err, req, res, next) => {
+	next(err);
+}, errorHandler);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

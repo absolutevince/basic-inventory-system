@@ -1,4 +1,6 @@
-const { createInventoryQuery, getTableNamesQuery } = require("../db/query");
+const formatTableNames = require("../utils/formatTableNames");
+const asyncHandler = require("express-async-handler");
+const { createInventoryQuery, getInventoryNamesQuery } = require("../db/query");
 
 const inventories = [
 	{ name: "Foods" },
@@ -6,24 +8,28 @@ const inventories = [
 	{ name: "Bills" },
 ];
 
-exports.indexHomepageGet = async (req, res) => {
-	const { rows } = await getTableNamesQuery();
+const indexHomepageGet = async (req, res) => {
+	const { rows } = await getInventoryNamesQuery();
 	// convert table_name to name, to be able to use it on views without typing '_'.
-	const tables = rows.map((t) => {
-		const split = t.table_name.split("");
-		const capitalized = [split.shift().toUpperCase(), ...split].join("");
-		return {
-			name: capitalized,
-		};
-	});
+	const tables = formatTableNames(rows);
 
 	res.render("indexView", {
 		title: "Basic Inventory System",
 		inventories: tables,
+		error: null,
 	});
 };
 
-exports.indexCreateInventoryPost = async (req, res) => {
-	await createInventoryQuery({ name: req.body.name });
-	res.redirect("/");
+const indexCreateInventoryPost = asyncHandler(async (req, res, next) => {
+	try {
+		await createInventoryQuery({ name: req.body.name });
+		res.redirect("/");
+	} catch (error) {
+		next(error);
+	}
+});
+
+module.exports = {
+	indexHomepageGet,
+	indexCreateInventoryPost,
 };
