@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tailwind-dev": "npx @tailwindcss/cli -i ./style/index.css -o ./public/style.css --watch"
+    "tailwind-dev": "npx @tailwindcss/cli -i ./style/index.css -o ./public/style.css --watch",
+    "serve": "node db/init.js && node app.js"
   },
   "keywords": [],
   "author": "",

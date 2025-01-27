@@ -1,9 +1,10 @@
+const capitalize = require("./capitalize");
+
 const formatTableNames = (names) => {
 	return names.map((t) => {
-		const split = t.table_name.split("");
-		const capitalized = [split.shift().toUpperCase(), ...split].join("");
 		return {
-			name: capitalized,
+			name: capitalize(t.name),
+			id: t.id,
 		};
 	});
 };

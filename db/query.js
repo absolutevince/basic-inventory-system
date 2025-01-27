@@ -1,26 +1,48 @@
 const asyncHandler = require("express-async-handler");
 const pool = require("./pool");
+const {
+	addInventoryQueryTemplate,
+	createProducTableQueryTemplate,
+} = require("../utils/queryUtils");
+
+const invNamesTable = process.env.INV_NAMES_TABLE;
 
 const createInventoryQuery = async ({ name }) => {
-	const { rows } = await getInventoryNamesQuery();
-
-	// return an error object instead when name already exists
-	for (let i = 0; i < rows.length; i++) {
-		if (rows[i].table_name.toLowerCase() === name.toLowerCase()) {
-			throw new Error("Inventory Already Exists");
-		}
-	}
-
-	await pool.query(`CREATE TABLE IF NOT EXISTS ${name} (name VARCHAR (35))`);
+	await pool.query(createProducTableQueryTemplate(name));
+	await pool.query(addInventoryQueryTemplate(name));
 };
 
 const getInventoryNamesQuery = async () => {
 	return await pool.query(
-		"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'public'",
+		`SELECT name, id FROM ${invNamesTable} WHERE type = 'inventory'`,
 	);
+};
+
+const getInventoryId = async (name) => {
+	await pool.query(`SELECT id FROM ${invNamesTable}  WHERE name = ${name}`);
+};
+
+const removeInventoryQuery = async (id) => {
+	const { rows: tableNamesRows } = await pool.query(`
+		SELECT name FROM ${invNamesTable}
+		WHERE id = ${id}
+	`);
+
+	const tableName = tableNamesRows[0].name;
+
+	await pool.query(`
+		DROP TABLE ${tableName}
+`);
+
+	await pool.query(`
+		DELETE FROM ${invNamesTable}
+		WHERE id = ${id}
+`);
 };
 
 module.exports = {
 	getInventoryNamesQuery,
 	createInventoryQuery,
+	getInventoryId,
+	removeInventoryQuery,
 };

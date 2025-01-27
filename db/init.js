@@ -2,12 +2,11 @@ require("dotenv").config();
 const { Client } = require("pg");
 
 const SQL = `
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS inventories (
 	id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	name VARCHAR (35),
-	category VARCHAR (15),
-	price INTEGER
-)
+	type VARCHAR (15)
+);
 `;
 
 (async () => {
