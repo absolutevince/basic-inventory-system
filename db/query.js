@@ -1,4 +1,3 @@
-const asyncHandler = require("express-async-handler");
 const pool = require("./pool");
 const {
 	addInventoryQueryTemplate,
@@ -13,36 +12,55 @@ const createInventoryQuery = async ({ name }) => {
 };
 
 const getInventoryNamesQuery = async () => {
-	return await pool.query(
-		`SELECT name, id FROM ${invNamesTable} WHERE type = 'inventory'`,
-	);
+	return await pool.query(`SELECT name, id FROM ${invNamesTable}`);
 };
 
 const getInventoryId = async (name) => {
-	await pool.query(`SELECT id FROM ${invNamesTable}  WHERE name = ${name}`);
+	await pool.query(`SELECT id FROM ${invNamesTable}  WHERE name = '${name}'`);
 };
-
 const removeInventoryQuery = async (id) => {
-	const { rows: tableNamesRows } = await pool.query(`
-		SELECT name FROM ${invNamesTable}
-		WHERE id = ${id}
-	`);
-
-	const tableName = tableNamesRows[0].name;
-
-	await pool.query(`
-		DROP TABLE ${tableName}
-`);
-
+	await pool.query(`DROP TABLE ${await getInventoryNameQuery(id)}`);
 	await pool.query(`
 		DELETE FROM ${invNamesTable}
-		WHERE id = ${id}
+		WHERE id = '${id}'
+`);
+};
+
+const getInventoryQuery = async (id) => {
+	const { rows } = await pool.query(`
+		SELECT * FROM ${await getInventoryNameQuery(id)}
+	`);
+
+	return rows;
+};
+
+const getInventoryNameQuery = async (id) => {
+	const { rows } = await pool.query(
+		`SELECT name FROM ${invNamesTable} WHERE id = ${id}`,
+	);
+	return rows[0].name;
+};
+
+const addItemQuery = async ({ name, price, tableId }) => {
+	await pool.query(`
+		INSERT INTO ${await getInventoryNameQuery(tableId)} (name, price)
+		VALUES ('${name}',${price})
+`);
+};
+
+const deleteItemQuery = async (tableId, itemId) => {
+	await pool.query(`
+		DELETE FROM ${await getInventoryNameQuery(tableId)} WHERE id = ${itemId}
 `);
 };
 
 module.exports = {
+	deleteItemQuery,
+	addItemQuery,
 	getInventoryNamesQuery,
 	createInventoryQuery,
 	getInventoryId,
 	removeInventoryQuery,
+	getInventoryQuery,
+	getInventoryNameQuery,
 };

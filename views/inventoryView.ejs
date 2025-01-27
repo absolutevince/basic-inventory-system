@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+		<link rel="stylesheet" href="/style.css">
+	</head>
+	<body>
+		<%- include("partials/header", {title}) %>
+		<main class="p-4 flex flex-col gap-4 w-[600px] mx-auto">
+			<a class="bg-sky-300 px-4 py-2 rounded-md cursor-pointer font-bold text-neutral-800 col-span-4 self-start" href="/">Home</a>
+			<div>
+				<form action="/inventory/add/<%= id %>" method="POST" class="w-full grid grid-cols-12 items-end">
+					<div class="col-span-8 flex gap-4">
+						<input type="text" name="name" class="w-full border-b" placeholder="Name" required maxLength="25">
+						<input type="number"  name="price"  class="w-full border-b" placeholder="Price" max="9999" required>
+					</div>
+					<button type="submit" id="add-item-button" class="bg-sky-300 px-4 py-2 rounded-md cursor-pointer font-bold text-neutral-800 col-span-4">Add Item</button>
+				</form>
+			</div>
+			<table class="text-neutral-100 w-full">
+				<thead class="bg-rose-700">
+					<tr class="grid grid-cols-12">
+						<th class="col-span-8 p-2 border border-neutral-500">Name</th>
+						<th class="col-span-4 p-2 border border-neutral-500">Price</th>
+					</tr>
+				</thead>
+				<tbody class="bg-rose-100 text-neutral-900 ">
+					<% if(data) { %>
+					<% for(let i =0; i < data.length;i++) { %>
+						<tr class="grid grid-cols-12">
+							<td class="flex justify-between items-center col-span-8 border border-neutral-500 p-2"><%= data[i].name %>
+								<a class="text-rose-900 bg-rose-400 p-2 rounded-md" href="/inventory/delete/<%= id %>/?id=<%= data[i].id %>">X</a>
+							</td>
+							<td class="col-span-4 border border-neutral-500 p-2 flex items-center justify-end">₱<%= data[i].price %>
+							</td>
+						</tr>
+					<% } %>
+					<%} %>
+				</tbody>
+			</table>
+			<% if(data.length === 0){%>
+				<h2>No Data</h2> 
+			<% }%>
+		</main>
+	</body>
+</html>

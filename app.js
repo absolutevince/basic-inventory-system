@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const indexRouter = require("./routes/indexRouter");
 const errorHandler = require("./handlers/errorHandler");
+const inventoryRouter = require("./routes/inventoryRouter");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.static(path.join(__dirname, "style")));
 
 // Routers
 app.use("/", indexRouter);
+app.use("/inventory", inventoryRouter);
 
 app.use((err, req, res, next) => {
 	next(err);

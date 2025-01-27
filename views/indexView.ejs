@@ -8,9 +8,7 @@
 </head>
 <body>
 		<div class="max-w-[1400px] mx-auto flex flex-col gap-4">
-		<header class="p-4 bg-rose-900 text-slate-100">
-			<h1 class="text-2xl"><%= title %></h1>
-		</header>	
+			<%- include("partials/header", {title}) %>
 		<main class="relative">
 				<%- include("partials/errorMessage") %>
 				<% if(!inventories) { %>
@@ -25,24 +23,21 @@
 				<ul class='flex flex-col gap-2 w-[80%] mx-auto'>
 					<% for(let i = 0; i < inventories.length; i++) { %>
 						<li class="bg-gray-400 grid grid-cols-4 shadow-sm shadow-black">
-							<div class="col-span-3 p-4 hover:bg-gray-300 cursor-pointer"><%= inventories[i].name %></div>
+							<a class="col-span-3 p-4 hover:bg-gray-300 cursor-pointer" href="/inventory/<%= inventories[i].id %>">	
+								<%= inventories[i].name %>
+							</a>
 							<div class="flex justify-center p-4">
 								<button data-name="remove-button" data-id="<%= inventories[i].id %>" class="hover:bg-red-200 cursor-pointer py-0.5 px-4 bg-red-300 text-red-900 shadow-sm shadow-red-900 rounded-md">Remove</button>
 							</div>
 						</li>
-						
-						<form data-id="<%= inventories[i].id %>" class="hidden" action="/delete/<%= inventories[i].id %>" method="POST" >
-							<p>Remove <%= inventories[i].name	%>?</p>
-							<a href="/" class="font-bold border px-1 py-0.5 text-cyan-300" data-name="close-confirmation-button">No</a>
-							<button type=submit>Yes</button>
-						</form>
+						<%- include("partials/removeConfirmation", {name: inventories[i].name, id: inventories[i].id}) %>
 						<% } %>
 				</ul>
 			<% }%>
 		</main>
 			<div id="create-inventory-form-cont" class="hidden absolute top-[20%] left-[50%] translate-x-[-50%]">
 				<form class="p-4 bg-gray-400 shadow-sm shadow-gray-900 flex flex-col gap-4" action="/create" method="POST">
-					<input type="text" class="bg-slate-100 py-0.5 px-1" name="name">
+					<input type="text" class="bg-slate-100 py-0.5 px-1" name="name" required maxLength="25">
 					<button  type="submit" class="hover:bg-sky-200 cursor-pointer  py-0.5 px-4 bg-sky-300 text-sky-900 shadow-sm shadow-sky-900 rounded-md">Create</button>
 				</form>
 		</div>
