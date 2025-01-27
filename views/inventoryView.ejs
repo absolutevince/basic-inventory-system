@@ -37,12 +37,23 @@
 							</td>
 						</tr>
 					<% } %>
-					<%} %>
+						<%} %>
 				</tbody>
+				<tfoot class="text-neutral-900">
+						<tr class="grid grid-cols-12">
+							<th class="flex justify-between items-center col-span-8 border border-neutral-500 p-2">
+							Total
+							</th>
+							<td class="col-span-4 border border-neutral-500 p-2 flex items-center justify-end">
+							<% if(data) {%>
+								₱<%= data.reduce((acc, curr) => acc + Number(curr.price), 0) %>
+							<%} else { %>
+								0
+							<% } %>
+							</td>
+						</tr>
+				</tfoot>
 			</table>
-			<% if(data.length === 0){%>
-				<h2>No Data</h2> 
-			<% }%>
 		</main>
 	</body>
 </html>
